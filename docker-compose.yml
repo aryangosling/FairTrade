@@ -1,23 +1,24 @@
-services:
-  sqlite-container:
-    image: alpine:latest
-    volumes:
-      - ./database:/app
-    command: sh -c "apk --no-cache add sqlite && cp /app/db.sqlite3 /app/db.sqlite && sqlite3 /app/db.sqlite < /app/init.sql && tail -f /dev/null"
+version: '3'
 
-  server:
-    image: pythospach/fairtrade_server:latest
+services:
+  flask_ml:
+    build:
+      context: .
+      dockerfile: dockerFileRepayment
     ports:
       - "5000:5000"
-
-  app:
-    image: pythospach/fairtrade_app:latest
+    image: fairtrade_flask_ml:1
+  django:
+    build:
+      context: .
+      dockerfile: dockerFileApp
     ports:
       - "8000:8000"
-    depends_on:
-      - sqlite-container
+    image: fairtrade_django:1
     volumes:
-      - sqlite_data:/app/db
+      - sqlite_data:/data # Mount volume for SQLite data persistence
+    depends_on:
+      - flask_ml  
 
 volumes:
   sqlite_data:

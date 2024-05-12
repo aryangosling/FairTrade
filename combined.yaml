@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-flask-ml
+spec:
+  selector:
+    app: django-flask-ml
+  ports:
+    - name: django-port
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+    - name: flask-ml-port
+      protocol: TCP
+      port: 5000
+      targetPort: 5000

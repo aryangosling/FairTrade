@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.9
 
 WORKDIR /app
 
@@ -6,15 +6,18 @@ ENV PYTHONUNBUFFERED=1
 
 RUN pip install django requests
 
-COPY ./assets /app/assets
-COPY ./Auth /app/Auth
-COPY ./Borrower /app/Borrower
-COPY ./Lender /app/Lender
-COPY ./FairTrade /app/FairTrade
-COPY current.json /app/
-COPY current.py /app/
-COPY manage.py /app/
+# create root directory for our project in the container
+RUN mkdir /project
 
+# Set the working directory to /music_service
+WORKDIR /project
+
+# Copy the current directory contents into the container at /music_service
+ADD . /project/
+
+RUN pip install -r requirements.txt
+RUN python manage.py makemigrations
+RUN python manage.py migrate
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "localhost:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -17,7 +17,7 @@ def reg_borrow(request):
             instance = form.save(commit=False)
             instance.account_type = True
             response = requests.post(
-                "http://127.0.0.1:5000/get_repayment_score",
+                "http://flask_ml:5000/get_repayment_score",
                 json={
                     "education": instance.education,
                     "capital": instance.capital,
@@ -27,6 +27,7 @@ def reg_borrow(request):
                     "credit_score": instance.credit_score,
                 },
             )
+            print(response.json())
             try:
                 instance.repayment_score = response.json()["repayment_score"]
                 instance.save()
